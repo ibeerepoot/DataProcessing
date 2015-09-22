@@ -1,0 +1,15 @@
+body {
+	background-color: #efefef;
+}
+h1 { 
+	margin-left: 450px;
+	font-family: Arial;
+	color: #526e83;
+}
+#graph {
+	background-color: #fff;
+	margin-left: 100px;
+}
+#rawdata {
+	display: none;
+}
