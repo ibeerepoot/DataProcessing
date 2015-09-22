@@ -31,11 +31,6 @@ function createTransform(domain, range){
 	// range is a two-element array of the range's bounds
 	// implement the actual calculation here
 
-	// Cmax = range[1]
-	// Cmin = range[0]
-	// Dmax = domain[1]
-	// Dmin = domain[0]
-
 	var Cmax_minus_Cmin = range[1] - range[0];
 	var Dmax_minus_Dmin = domain[1] - domain[0];
 
@@ -51,19 +46,13 @@ function createTransform(domain, range){
 	};
 }
 
-/*
-// to use this for instance:
-var transform = createTransform([10, 20], [10, 20]);
-console.log(transform(15));  // should log 15
-*/
-
 // calculate domain
 var Dmin = Math.min.apply(null, temperatures);
 var Dmax = Math.max.apply(null, temperatures);
 
 /* 
 set values for range
-don't start at 0,0 of the canvas, but leave some space at the top, so 75
+don't start at 0,0 of the canvas, but leave some space at the top, so 100
 also leave some space at the bottom, so don't go to 550, but to 434
 */
 var Cmin = 434;
@@ -102,16 +91,12 @@ for (var k = 0; k < 12; k++){
 		ctx.fillStyle = "#cbf6ed";
 	}
 	var rectwidth = num_days[k]*2;
-	// x,y,width,height
+	// make rectangle for that month
 	ctx.fillRect(rectx,75,rectwidth,350);
 
+	// update the x value
 	rectx += num_days[k]*2;
 }
-
-/*
-ctx.fillStyle = "#4bdabc";
-ctx.fillRect(150,75,62,350);
-*/
 
 // change colour to black
 ctx.fillStyle = "#000";
