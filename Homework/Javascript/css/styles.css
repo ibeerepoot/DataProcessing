@@ -9,6 +9,13 @@ h1 {
 #graph {
 	background-color: #fff;
 	margin-left: 100px;
+	position: absolute;
+	z-index: 1;
+}
+#overlay {
+	margin-left: 100px;
+	position: absolute;
+	z-index: 2;
 }
 #rawdata {
 	display: none;

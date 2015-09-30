@@ -25,6 +25,22 @@ for(var i = 0; i < lines.length; i++){
     }
 }
 
+/* 
+convert csv array to JSON
+*/
+var myarray = [];
+var myJSON = "";
+
+// length of array is 368 (367), but the first (0) and last (367) don't contain values
+for (var i = 1; i < (data.length - 1); i++) {
+    var item = {
+        "date": data[i][0],
+        "temperature": data[i][1]
+    };
+    myarray.push(item);
+}
+myJSON = JSON.stringify({myarray: myarray});
+
 // find the alpha and beta data points
 function createTransform(domain, range){
 	// domain is a two-element array of the domain's bounds
@@ -70,50 +86,64 @@ var c = document.getElementById("graph");
 // ctx is the pencil with which we draw
 var ctx = c.getContext("2d");
 
+/*
+figure out where the ticks should be
+*/
 // create array for number of days in months
 var num_days = [31,29,31,30,31,30,31,31,30,31,30,31];
-
-var rectx = 150;
-
+// create variable to keep track of where the tick should be on x-axis
+var tickx = 150;
+// move the pencil to the x/y intersection
+ctx.moveTo(tickx,425);
 // loop through all months
 for (var k = 0; k < 12; k++){
-	// figure out which colour the background should be
-	if (k == 0 || k == 4 || k == 8){
-		ctx.fillStyle = "#4bdabc";
-	}
-	else if (k == 1 || k == 5 || k == 9){
-		ctx.fillStyle = "#8ef3e1";
-	}
-	else if (k == 2 || k == 6 || k == 10){
-		ctx.fillStyle = "#8de1d2";
-	}
-	else {
-		ctx.fillStyle = "#cbf6ed";
-	}
-	var rectwidth = num_days[k]*2;
-	// make rectangle for that month
-	ctx.fillRect(rectx,75,rectwidth,350);
-
 	// update the x value
-	rectx += num_days[k]*2;
+	tickx += num_days[k]*2;
+
+	// draw tick
+	ctx.moveTo(tickx,430);
+	ctx.lineTo(tickx,420);
+	ctx.stroke();
 }
 
-// change colour to black
-ctx.fillStyle = "#000";
+// draw lighter horizontal lines for every 5 degrees
+var line_y_position = 475;
+ctx.beginPath();
+// move to x=0 and y=-5
+ctx.moveTo(150,line_y_position);
+// change colour of lines to grey
+ctx.strokeStyle = "#d3d3d3";
+// loop through every 5 degrees Celsius from -5 to 35
+for (var m = -5; m < 36; m += 5) {
+	// draw light line to the right
+	ctx.lineTo(880,line_y_position);
+	ctx.stroke();
+	// update y position for next line
+	line_y_position -= 50;
+	// move to the new y position
+	ctx.moveTo(150,line_y_position);
+}
+ctx.closePath();
 
 // draw x-axis
+ctx.beginPath();
+ctx.strokeStyle = "#000";
 ctx.moveTo(150,425);
 ctx.lineTo(880,425);
+ctx.closePath();
 ctx.stroke();
 
 // draw y-axis
-ctx.moveTo(150,425);
+ctx.beginPath();
+ctx.strokeStyle = "#000";
+ctx.moveTo(150,475);
 ctx.lineTo(150,75);
+ctx.closePath();
 ctx.stroke();
 
 // draw graph
 for (var i = 0; i < 366; i++){
-	var current_temperature = transform(temperatures[i]);
+	var current_temperature = transform(myarray[i].temperature);
 	var current_day = 150 + i*2;
 	ctx.lineTo(current_day,current_temperature);
 	ctx.stroke();
@@ -122,13 +152,13 @@ for (var i = 0; i < 366; i++){
 
 // write text
 ctx.font = "20px Arial";
-ctx.fillText("Degrees Celsius",30,50);
+ctx.fillText("Max temp in Celsius",30,50);
 ctx.fillText("Months in 2014",850,500);
 
 // write degrees Celsius
 ctx.font = "12px Arial";
-var y_position = 430;
-for (var j = 0; j < 36; j += 5) {
+var y_position = 479;
+for (var j = -5; j < 36; j += 5) {
 	ctx.fillText(j,120,y_position);
 	y_position -= 50;
 }
