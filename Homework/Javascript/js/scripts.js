@@ -106,8 +106,8 @@ for (var k = 0; k < 12; k++){
 	tickx += num_days[k]*2;
 
 	// draw tick
-	ctx.moveTo(tickx,430);
-	ctx.lineTo(tickx,420);
+	ctx.moveTo(tickx,(x_axis+5));
+	ctx.lineTo(tickx,(x_axis-5));
 	ctx.stroke();
 }
 
@@ -201,6 +201,10 @@ var mouseposition = el.getBoundingClientRect();
 
 // function that should be called when mouse is moved over canvas
 function crosshair(event) {
+	// get the html element tooltip, make sure it doesn't show
+	var tooltip_element = document.getElementById('tooltip');
+	tooltip_element.style.display="none";
+
 	// get values from the event that's done on overlay canvas
 	var pagex = event.pageX;
 	var pagey = event.pageY;
@@ -208,8 +212,6 @@ function crosshair(event) {
 	var canvasx = pagex - mouseposition.left;
 	// subtract mouseposition.top from pagey to get canvasy
 	var canvasy = pagey - mouseposition.top;
-	console.log("canvasx: ", canvasx);
-	console.log("canvasy: ", canvasy);
 
 	// get the current day the mouse is on
 	var crosshairx = canvasx / 2;
@@ -220,10 +222,6 @@ function crosshair(event) {
 	// transform the temperature to its y-value on the canvas
 	// since the createTransform was for the base canvas, substract 75 because the overlay canvas starts lower
 	var crosshairy = transform(degrees_on_day)-75;
-	console.log("crosshairx: ", crosshairx);
-	console.log("crosshairy: ", crosshairy);
-	console.log("mouse_on_day: ", mouse_on_day);
-	console.log("degrees_on_day: ", degrees_on_day);
 
 	// calculate y-position of x axis of overlay canvas
 	var x_axis_overlay = 375 + mouseposition.top;
@@ -277,18 +275,20 @@ function crosshair(event) {
 	/*
 	Tooltip
 	*/
-	// get the html element
-	var tooltip_element = document.getElementById('tooltip');
-	// display the element
-	tooltip_element.style.display="inline";
-	// calculate what value the left-margin of the tooltip should be
-	var lmargin = mouse_on_day*2+250-200 + 'px';
-	// 
-	tooltip_element.style.marginLeft=lmargin;
-	// get the full date string from the array that belongs to the current date
-	var full_date = myarray[mouse_on_day].date;
-	// change the text in the div
-	tooltip_element.textContent = 'On ' + full_date + ' it was ' + degrees_on_day + '℃';
+	function tooltip() {
+		// display the element
+		tooltip_element.style.display="inline";
+		// calculate what value the left-margin of the tooltip should be
+		var lmargin = mouse_on_day*2+250-200 + 'px';
+		// change the left margin to let the tooltip move with the mouse
+		tooltip_element.style.marginLeft=lmargin;
+		// get the full date string from the array that belongs to the current date
+		var full_date = myarray[mouse_on_day].date;
+		// change the text in the div
+		tooltip_element.textContent = 'On ' + full_date + ' it was ' + degrees_on_day + '℃';
+	}
+	// only call the tooltip when some time has passed
+	setTimeout(tooltip, 1000);
 }
 
 // listen to the position of the mouse when it movees over the overlay canvas
