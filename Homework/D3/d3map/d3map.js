@@ -29,7 +29,7 @@ function mapData() {
 	// create a new datamap
 	var map = new Datamap({
 		element: document.getElementById('container'),
-		
+
 		// add the classes for the different groups
 		fills: {
 		    defaultFill: "#ABDDA4",
@@ -47,39 +47,34 @@ function mapData() {
 		    group12: "#cceae6", 
 		    group13: "#e0fefa"
 		},
-		data: {},
+		data: {
+			"USA": { fillKey: "red", population: "50" },
+		},
+		// edit popup
+		geographyConfig: {
+            popupTemplate: function(geo, data) {
+                return ['<div class="hoverinfo"><strong>',
+                        geo.properties.name + '<br>',
+                        'Population: ' + data.population,
+                        '</strong></div>'].join('');
+            }
+        },
 	});
 
-	// add countries to the data list
-	map.options.data["NLD"] = { fillKey: "group13"}
-	
+	// add country to the data property in the datamap object
+	for (var country in parsed) {
+		var codeOfCountry = parsed[key].code;
+		map.options.data[codeOfCountry] = { fillKey: "", population: "100"};
+	}
+
 	console.log(map.options.data);
-
-	map.updateChoropleth({
-	    USA: "groep1",
-	    RUS: "#e0fefa",
-	    AUS: "#e0fefa",
-	    BRA: "#e0fefa",
-	    CAN: "#e0fefa",
-	    ZAF: "#e0fefa",
-	    IND: "#e0fefa",
-	  });
-
+	
+	var group = "groep1";
+	
+	// loop through all country keys in map.data
 	for (key in map.options.data) {
 		var data = {};
-		data[key] = "green";
+		data[key] = { fillKey: group};
 		map.updateChoropleth(data);
-		
-		/*
-		map.updateChoropleth({
-		    USA: "groep13",
-		    RUS: "#e0fefa",
-		    AUS: { fillKey: 'groep1' },
-		    BRA: "#e0fefa",
-		    CAN: "#e0fefa",
-		    ZAF: "#e0fefa",
-		    IND: "#e0fefa",
-		  });
-		*/
 	}
 }
